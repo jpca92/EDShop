@@ -6,5 +6,7 @@ app_name = 'appweb'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('productsPerCategory/<int:category_id>', views.productsPerCategory, name='productsPerCategory'),
+    
     
 ]
