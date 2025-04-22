@@ -54,3 +54,8 @@ def productDetail (request, product_id):
 
     }
     return render (request, 'producto.html', context)
+
+""" views for shopping cart """
+
+def shopping_cart(request):
+    return render (request, 'carrito.html')
