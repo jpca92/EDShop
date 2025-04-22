@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Category, Product
+from .cart import Cart
 
 def index(request):
     products_list = Product.objects.all()
@@ -59,3 +60,12 @@ def productDetail (request, product_id):
 
 def shopping_cart(request):
     return render (request, 'carrito.html')
+
+def add_to_cart(request, product_id):
+    quantity = 1
+
+    objectProduct = Product.objects.get(pk=product_id)
+    cart = Cart(request)
+    cart.add(objectProduct, quantity)
+    print(request.session.get('cart'))
+    return render(request, 'carrito.html')
