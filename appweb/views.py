@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Category, Product
 
@@ -27,7 +27,7 @@ def productsPerCategory(request, category_id):
     }
     return render(request, 'index.html', context)
 
-
+# This view is used to filter products by name using a form in the index.html - header.html template
 def productsPerName(request):
     name = ''
     if request.method == 'POST':
@@ -46,4 +46,11 @@ def productsPerName(request):
 
     return render(request, 'index.html', context)
 
+def productDetail (request, product_id):
+    # objProduct = Product.objects.get(pk=product_id)
+    objProduct = get_object_or_404(Product, pk=product_id)
+    context = {
+        'product': objProduct,
 
+    }
+    return render (request, 'producto.html', context)
