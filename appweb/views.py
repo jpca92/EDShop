@@ -62,7 +62,10 @@ def shopping_cart(request):
     return render (request, 'carrito.html')
 
 def add_to_cart(request, product_id):
-    quantity = 1
+    if request.method == 'POST':
+        quantity = int(request.POST['quantity'])
+    else:
+        quantity = 1
 
     objectProduct = Product.objects.get(pk=product_id)
     cart = Cart(request)
