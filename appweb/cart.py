@@ -18,7 +18,7 @@ class Cart:
                 'price': str(product.price),
                 'image': product.image.url,
                 'category': product.category.name,
-                'category_id': product.category.id,
+                'category_id': product.category.id, # category id for future use
                 'subtotal': str(quantity * product.price)
             }
         else:
