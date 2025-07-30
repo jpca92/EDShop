@@ -71,6 +71,10 @@ def add_to_cart(request, product_id):
     cart = Cart(request)
     cart.add(objectProduct, quantity)
     print(request.session.get('cart'))
+
+    if request.method == 'GET':
+        return redirect('/')
+    
     return render(request, 'carrito.html')
 
 def remove_from_cart(request, product_id):
