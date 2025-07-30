@@ -72,3 +72,15 @@ def add_to_cart(request, product_id):
     cart.add(objectProduct, quantity)
     print(request.session.get('cart'))
     return render(request, 'carrito.html')
+
+def remove_from_cart(request, product_id):
+    objectProduct = Product.objects.get(pk=product_id)
+    cartProduct = Cart(request)
+    cartProduct.remove(objectProduct)
+    
+    return render(request, 'carrito.html')
+
+def clear_cart(request):
+    cartProduct = Cart(request)
+    cartProduct.clear()
+    return render(request, 'carrito.html')
