@@ -15,6 +15,7 @@ urlpatterns = [
     path('clearcart', views.clear_cart, name='clearcart'),
     path('createuser', views.createUser, name='createuser'),
     path('account', views.accountUser, name='accountuser'),
-    path('updateclient', views.updateClient, name='updateclient')
+    path('updateclient', views.updateClient, name='updateclient'),
+    path('login', views.loginUser, name='loginuser')
        
 ]

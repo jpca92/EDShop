@@ -97,7 +97,7 @@ def createUser(request):
     if request.method == 'POST':
         dataUser = request.POST['newUser']
         dataPassword = request.POST['newPassword']
-        newUser = User.object.create_user(username=dataUser, email=dataUser, password=dataPassword)
+        newUser = User.objects.create_user(username=dataUser, email=dataUser, password=dataPassword)
         if newUser is not None:
             login(request, newUser)
             return redirect('/account')
@@ -107,11 +107,30 @@ def createUser(request):
 
 
 def accountUser(request):
+    try:
+        editClient = Client.objects.get(user= request.user)
+        dataClient = {
+            'name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+            'address': editClient.address,
+            'phone': editClient.phone,
+            'dni': editClient.dni,
+            'sex': editClient.sex,
+            'birth_date': editClient.birth_date
+        }
+    except:
+        {
+            'name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email
+        }
+
     formClient = ClientForm()
     context = {
         'formClient': formClient
     }
-    return render(request, 'cuenta.html')
+    return render(request, 'cuenta.html', context)
 
 def updateClient(request):
     message = ''
@@ -133,7 +152,8 @@ def updateClient(request):
             newClient.address = dataClient['address']
             newClient.phone = dataClient['phone']
             newClient.sex = dataClient['sex']
-            newClient.birth_date = dataClient['birth_date']
+            newClient.birth_date= dataClient['birth_date']
+            newClient.save()
 
             message = 'Client updated successfully'
         context = {
@@ -144,3 +164,21 @@ def updateClient(request):
 
 
     return render(request, 'cuenta.html', context)
+
+def loginUser(request):
+    context = {}
+
+    if request.method == 'POST':
+        dataUser = request.POST['user']
+        dataPassword = request.POST['password']
+        userAuth = authenticate(request, username=dataUser, password=dataPassword)
+
+        if userAuth is not None:
+            login(request, userAuth)
+            return redirect('/account')
+        else:
+            context = {
+                'message':'Invalid credentials'
+            }
+
+    return render(request, 'login.html', context)
