@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from .models import Category, Product, Client, Order, OrderDetail
 from .cart import Cart
 
@@ -119,14 +120,14 @@ def accountUser(request):
             'sex': editClient.sex,
             'birth_date': editClient.birth_date
         }
-    except:
+    except Client.DoesNotExist:
         {
             'name': request.user.first_name,
             'last_name': request.user.last_name,
             'email': request.user.email
         }
 
-    formClient = ClientForm()
+    formClient = ClientForm(initial=dataClient)
     context = {
         'formClient': formClient
     }
@@ -166,15 +167,24 @@ def updateClient(request):
     return render(request, 'cuenta.html', context)
 
 def loginUser(request):
-    context = {}
+    landdingPage = request.GET.get('next', None)
+    context = {
+        'landdingPage': landdingPage
+    }
 
     if request.method == 'POST':
         dataUser = request.POST['user']
         dataPassword = request.POST['password']
+        dataDestiny = request.POST['landdingPage']
+
         userAuth = authenticate(request, username=dataUser, password=dataPassword)
 
         if userAuth is not None:
             login(request, userAuth)
+
+            if dataDestiny != 'None':
+                return redirect(dataDestiny)
+
             return redirect('/account')
         else:
             context = {
@@ -182,3 +192,36 @@ def loginUser(request):
             }
 
     return render(request, 'login.html', context)
+
+def logoutUser(request):
+    logout(request)
+    return render(request, 'login.html')
+
+
+# Views for shopping cart
+@login_required(login_url='/login')
+def register_order(request):
+    try:
+        editClient = Client.objects.get(user= request.user)
+        dataClient = {
+            'name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+            'address': editClient.address,
+            'phone': editClient.phone,
+            'dni': editClient.dni,
+            'sex': editClient.sex,
+            'birth_date': editClient.birth_date
+        }
+    except Client.DoesNotExist:
+        dataClient ={
+            'name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email
+        }
+
+    formClient = ClientForm(initial=dataClient)
+    context = {
+        'formClient': formClient
+    }
+    return render(request, 'pedido.html', context)
